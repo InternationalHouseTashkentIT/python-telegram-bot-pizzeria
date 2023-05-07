@@ -19,8 +19,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     keyboard = [
         [
-            InlineKeyboardButton("Меню", callback_data="to_menu_page"),
-            InlineKeyboardButton("Корзина", callback_data="to_basket_page"),
+            InlineKeyboardButton("📖 Меню", callback_data="to_menu_page"),
+            InlineKeyboardButton("🧺 Корзина", callback_data="to_basket_page"),
         ],
         # [InlineKeyboardButton("Опция 3", callback_data="3")],
     ]
@@ -42,10 +42,15 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if query.data == "to_menu_page":
         markup = user.generate_menu_markup(user_name)
-        await query.edit_message_text(text="Вы перешли в меню:", reply_markup=markup)
+        await query.edit_message_text(text="Вы перешли в меню", reply_markup=markup)
 
     elif query.data == "to_basket_page":
-        await query.edit_message_text(text="Вы перешли в корзину")
+        data = user.generate_basket_markup_data(user_name)
+        await query.edit_message_text(text=data["message"], reply_markup=data["markup"])
+
+    elif query.data == "clear_basket":
+        data = user.generate_basket_markup_data(user_name, True)
+        await query.edit_message_text(text=data["message"], reply_markup=data["markup"])
 
     elif "to_product_" in query.data:
         # Обрезаем строку - получаем id продукта
